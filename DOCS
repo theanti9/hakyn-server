@@ -1,0 +1,80 @@
+hakyn server documentation
+==========================
+
+Modifier Key:
+* (s) - Static
+* (f) - final
+* (y) - synchronized
+
+
+Listener/service classes
+========================
+
+class HKListener - program entry point
+	
+	package: com.hakyn.srv
+
+	public properties
+	* (s) (f) HOST    : String
+	* (s) (f) PORT    : int
+	* (s) posService  : HKPositioningService
+	* (s) svcListener : HKServiceListener
+
+	private properties
+	* None
+
+	public methods
+	* (s) main (String[] args) : void
+
+	private methods
+	* None
+
+	branches
+	* TCPNIOTransport - main listener
+	* HKPositioningService - Positioning service
+	* HKServiceListener - service listener
+
+	comments
+	HKListener is where the program starts. This class
+	starts the servers two listeners, the TCPNIOTransport
+	listener that is used for two way communication in an
+	message->response format, HKServiceListener which 
+	listens on a second port for connections to stream 
+	position updates to. Both of these run asynchronously 
+	in their own threads. The HKPositioningService is 
+	started. This service keeps track of player positions
+	and periodically saves them to the database.
+	
+
+class HKPositioningService - main tracking for positioning
+	
+	package: com.hakyn.srv.service
+
+	public properties
+	* None
+
+	private properties
+	* (s) ZoneMap : HashMap<Integer, HKZone>
+	* (s) ready : boolean
+
+	public methods
+	* run ( ) : void
+	* stop ( ) : void
+	* (s) updateCharacterPosition ( String charid, int x, int y ) : void
+	
+
+	private methods
+	* (s) createZoneMap ( ) : void
+	* (s) getZoneIdForCharacter ( String charid ) : int
+	* (s) save ( ) : void
+
+	branches
+	* None
+
+	comments
+	HKPositioningService runs in a thread and keeps track of 
+	character positions. The thread itself sleeps for 60
+	seconds, calls it's save method, and sleeps again. The
+	save method takes the map of HKZone objects and saves each
+	of those, which in turn save the placement of all of the
+	characters in that zone to the database.
