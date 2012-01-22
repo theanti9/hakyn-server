@@ -13,7 +13,6 @@ import java.util.Arrays;
 import com.hakyn.srv.service.HKPositioningService;
 import com.hakyn.util.Converter;
 import com.hakyn.util.ArrayUtil;
-import com.hakyn.game.HKCharacter;
 
 public class UpdatePosition {
 	

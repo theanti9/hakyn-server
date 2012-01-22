@@ -17,7 +17,7 @@ import com.hakyn.game.HKZone;
 public class HKPositioningService implements Runnable {
 
 	// Map of zone ID's to their zone objects
-	private static HashMap<Integer,HKZone> ZoneMap;
+	public static HashMap<Integer,HKZone> ZoneMap;
 	// is the Positioning Service ready to accept commands
 	private static boolean ready = false;
 	
@@ -28,7 +28,7 @@ public class HKPositioningService implements Runnable {
 		
 		// mark as ready
 		ready = true;
-		
+		System.out.println("Positioning service ready.");
 		// This process is run in a thread
 		while (true) {
 			try {
@@ -52,8 +52,11 @@ public class HKPositioningService implements Runnable {
 		
 		// Fill map
 		for (Integer i : l) {
-			ZoneMap.put(i, new HKZone(i.intValue()));
+			// TODO: make this reflect the actual monster limits of each map
+			System.out.println("Loading zone "+ i);
+			ZoneMap.put(i, new HKZone(i.intValue(), 20));
 		}
+		System.out.println("Finished loading zone map");
 	}
 	
 	// Used to grab the current zone ID given a character's ID
@@ -95,8 +98,10 @@ public class HKPositioningService implements Runnable {
 
 	// loop over the zones and save them.
 	private static void save() {
+		System.out.println("Saving zones");
 		for(HKZone zone : ZoneMap.values()) {
 			zone.save();
+			System.out.println("Saved zone "+zone.ZoneId);
 		}
 	}
 }

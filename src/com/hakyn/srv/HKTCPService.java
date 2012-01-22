@@ -38,12 +38,14 @@ public class HKTCPService extends Extasys.Network.TCP.Server.ExtasysTCPServer {
 		// and add it to the list
 		HKServiceConnection svcCon = new HKServiceConnection(client);
 		svcCons.add(svcCon);
+		System.out.println("Service connection added from "+client.getIPAddress());
 	}
 	
 	@Override
 	public void OnClientDisconnect(TCPClientConnection client) {
 		// Remove the connection from the collection given the name
 		svcCons.remove(svcCons.getConnectionForCharacter(client.getName()));
+		System.out.println(client.getIPAddress()+" disconnected from services");
 	}
 	
 	@Override

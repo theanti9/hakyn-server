@@ -1,0 +1,27 @@
+Fixed packet header:
+
+Every command packet should start with a 9 byte fixed header.
+The first 3 bytes of a command packet should be the letters "HAK".
+Following the tag, there should be a 32 bit integer that 
+corresponds to the length of the data after the fixed header.
+After the size there are two bytes for designating the command.
+
+
+Commands are as follows:
+
+0x0001 Update Position
+	Length:
+		32 bytes
+	Parameters:
+		Mongo ID 		: 24 byte string
+		x coordinate	: 4 byte integer
+		y coordinate	: 4 byte integer
+
+0x0002 Spawn Monster
+	Length:
+		36 bytes
+	Parameters:
+		Mongo ID		: 24 byte string
+		Monster ID		: 4 byte integer
+		x coordinate	: 4 byte integer
+		y coordinate 	: 4 byte integer
