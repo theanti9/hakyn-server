@@ -5,12 +5,10 @@ import java.util.Arrays;
 import com.hakyn.util.*;
 public class HKMessageHeader {
 	public static final String HEAD_TAG = "HAK";
-	
+	public int length;
+	public byte command;
 	private byte[] bytes;
-	private int length;
 	private byte[] commandBytes;
-	private byte command;
-	
 	
 	// Message format
 	// bytes 1-3 should always be the letters HAK - this helps denote the start of a message
@@ -26,25 +24,17 @@ public class HKMessageHeader {
 		
 		// get the length of the message
 		this.length = Converter.networkToInt(this.bytes, 3);
-		
 		this.commandBytes = Arrays.copyOfRange(this.bytes, 7, 8);
-		
-		
-		// TODO: Fill in with commands as we create them.
-//		switch (commandBytes[1]) {
-//		case 0x01:
-//			this.command = MessageCommands.UPDATE_POSITION;
-//			break;
-//		}
+		this.command = this.commandBytes[1];
 	}
 	
 	public HKMessageHeader(byte command, int bodyLength) {
 		this.bytes = new byte[9];
-		ArrayUtil.ArrayIntoArray(bytes, HEAD_TAG.getBytes(), 0);
+		bytes = ArrayUtil.ArrayIntoArray(bytes, HEAD_TAG.getBytes(), 0);
 		this.length = bodyLength;
-		ArrayUtil.ArrayIntoArray(bytes, Converter.intToByteArray(bodyLength), 3);
+		bytes = ArrayUtil.ArrayIntoArray(bytes, Converter.intToByteArray(bodyLength), 3);
 		this.command = command;
-		ArrayUtil.ArrayIntoArray(bytes, new byte[] { 0x00, command }, 7);
+		bytes = ArrayUtil.ArrayIntoArray(bytes, new byte[] { 0x00, command }, 7);
 		this.length = bodyLength;
 	}
 	

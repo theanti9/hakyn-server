@@ -11,6 +11,14 @@ public class Converter {
 		}
 		return converted;
 	}
+	public static final int networkToInt(Byte[] bytes) {
+		int converted = 0x0;
+		for (int i = 0; i < 4; i++) {
+			converted = converted << 8;
+			converted |= bytes[i];
+		}
+		return converted;
+	}
 	// Convert first four network bytes to integer starting at the given offset
 	public static final int networkToInt(byte[] bytes, int offset) {
 		int converted = 0x0;

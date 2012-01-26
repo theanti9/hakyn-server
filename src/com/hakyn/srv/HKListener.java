@@ -27,29 +27,13 @@ public class HKListener {
 	
 	public static void main(String[] args) throws Exception {
 		System.out.println("Starting...");
-		// Create and add Main listener filter chain
-		FilterChainBuilder filterChainBuilder = FilterChainBuilder.stateless();
-		filterChainBuilder.add(new TransportFilter());
-		filterChainBuilder.add(new HKCommandFilter());
-		
-		// build filter chain
-		final TCPNIOTransport transport = TCPNIOTransportBuilder.newInstance().build();
-		transport.setProcessor(filterChainBuilder.build());
 		
 		try {
 			// Initialize databases
 			new MongoDbConnection();
+			MongoDbConnection.getInstance().selectDb("hakyn");
 			new MySqlDbConnection("localhost", 3306, "root", "", "hakyn");
 			
-			// Start main listener
-			transport.bind(PORT);
-			System.out.println("Starting Transport...");
-			transport.start();
-			
-			// Start service listener
-			System.out.println("Starting service listener...");
-			Thread svcThread = new Thread(svcListener);
-			svcThread.start();
 			
 			// Start the Position Service in a new thread
 			System.out.println("Starting Position Service...");
@@ -61,13 +45,15 @@ public class HKListener {
 			Thread spwnThread = new Thread(spwnService);
 			spwnThread.start();
 			
+			// Start service listener
+			System.out.println("Starting service listener...");
+			Thread svcThread = new Thread(svcListener);
+			svcThread.start();
 			
 			System.out.println("Running!");
 			System.out.println("Press <enter> to exit...");
 			System.in.read();
 		} finally {
-			transport.stop();
-			// This stops the threads
 			posService = null;
 			svcListener = null;
 			spwnService = null;

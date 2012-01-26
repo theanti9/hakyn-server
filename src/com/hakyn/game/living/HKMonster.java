@@ -62,15 +62,15 @@ public class HKMonster {
 					}
 					// finally add everything to the spawnable list
 					spawnable.add(new HKMonster(res.getInt("MonsterID"), res.getString("MonsterName"), new HKStats( res.getInt("MonsterHP"),
-																													res.getInt("MonsterLevel"),
-																													res.getInt("MonsterStr"),
-																													res.getInt("MonsterDef"),
-																													res.getInt("MonsterAgi"),
-																													res.getInt("MonsterSPeed"),
-																													res.getFloat("MonsterDamageMultiplier")), res.getInt("MaxSpawn"),
-																																							  res.getFloat("MonsterSpawnChance"),
-																																							  rlist,
-																																							  mskill));
+							res.getInt("MonsterLevel"),
+							res.getInt("MonsterStr"),
+							res.getInt("MonsterDef"),
+							res.getInt("MonsterAgi"),
+							res.getInt("MonsterSPeed"),
+							res.getFloat("MonsterDamageMultiplier")), res.getInt("MaxSpawn"),
+																	  res.getFloat("MonsterSpawnChance"),
+																	  rlist,
+																	  mskill));
 				}
 				
 			}

@@ -51,7 +51,7 @@ public class HKCharacter {
 		BasicDBObject update = new BasicDBObject();
 		// Set current zone
 		update.put("current_zone", zoneId);
-		// Update
+		// Update	
 		MongoDbConnection.getInstance().getCollection("characters").findAndModify(character, update);
 	}
 	

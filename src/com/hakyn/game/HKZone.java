@@ -54,7 +54,9 @@ public class HKZone {
 	public HKZone(int id, int maxMonsters) {
 		this.ZoneId = id;
 		this.maxMonsterCount = maxMonsters;
-		
+		this.monsterTypeCount = new ArrayList<Integer>();
+		this.MonsterMap = new HashMap<ObjectId,DBObject>();
+		this.CharacterMap = new HashMap<ObjectId,DBObject>();
 		// Load the characters currently in the zone
 		this.loadCharacters();
 		
@@ -124,7 +126,7 @@ public class HKZone {
 			// Get a new statement object from the MySql connection
 			Statement stmt = MySqlDbConnection.getInstance().getNewStatement();
 			// Run a query to get all the zone id's
-			boolean result = stmt.execute("SELECT zone_id FROM zones");
+			boolean result = stmt.execute("SELECT ZoneID FROM zones");
 			
 			// Make sure it worked
 			if (!result) {
@@ -151,6 +153,7 @@ public class HKZone {
 		MonsterMap.putAll(newSpawns);
 	}
 	
+	
 	private HashMap<ObjectId,DBObject> newSpawns() {
 		Random gen = new Random();
 		int i,j;
@@ -164,7 +167,7 @@ public class HKZone {
 			// comparing the spawn chance to see if we spawn a new one
 			HKMonster monster = spawnableMonsters.get(j);
 			// Also make sure that we haven't spawned too many of that type
-			if (new Float(i) * monster.SpawnChance < 100 && monsterTypeCount.get(j) < monster.MaxSpawn) {
+			if (new Float(i) * monster.SpawnChance < 100F && monsterTypeCount.get(j) < monster.MaxSpawn) {
 				// Create a new spawned monster object
 				DBObject dbobj = new BasicDBObject();
 				// Add the right attributes
@@ -204,10 +207,10 @@ public class HKZone {
 				HKMessageHeader header = new HKMessageHeader((byte)0x02, 36);
 				
 				byte[] body = new byte[36];
-				ArrayUtil.ArrayIntoArray(body, dbobj.get("_id").toString().getBytes(), 0);
-				ArrayUtil.ArrayIntoArray(body, dbobj.get("MonsterID").toString().getBytes(), 24);
-				ArrayUtil.ArrayIntoArray(body, Converter.intToByteArray((Integer)dbobj.get("x_coord")), 28);
-				ArrayUtil.ArrayIntoArray(body, Converter.intToByteArray((Integer)dbobj.get("y_coord")), 32);
+				body = ArrayUtil.ArrayIntoArray(body, dbobj.get("_id").toString().getBytes(), 0);
+				body = ArrayUtil.ArrayIntoArray(body, dbobj.get("MonsterID").toString().getBytes(), 24);
+				body = ArrayUtil.ArrayIntoArray(body, Converter.intToByteArray((Integer)dbobj.get("x_coord")), 28);
+				body = ArrayUtil.ArrayIntoArray(body, Converter.intToByteArray((Integer)dbobj.get("y_coord")), 32);
 				con.Send(new HKMessage(header, body, (byte)0x02).getBytes());
 			}
 		}
@@ -226,9 +229,9 @@ public class HKZone {
 			
 			// Create body and copy data to it
 			byte[] body = new byte[32];
-			ArrayUtil.ArrayIntoArray(body, ch.get("_id").toString().getBytes(), 0);
-			ArrayUtil.ArrayIntoArray(body, Converter.intToByteArray((Integer)ch.get("x_coord")), 24);
-			ArrayUtil.ArrayIntoArray(body, Converter.intToByteArray((Integer)ch.get("y_coord")), 28);
+			body = ArrayUtil.ArrayIntoArray(body, ch.get("_id").toString().getBytes(), 0);
+			body = ArrayUtil.ArrayIntoArray(body, Converter.intToByteArray((Integer)ch.get("x_coord")), 24);
+			body = ArrayUtil.ArrayIntoArray(body, Converter.intToByteArray((Integer)ch.get("y_coord")), 28);
 			
 			// Send out the data
 			con.Send(new HKMessage(header,body,(byte)0x01).getBytes());

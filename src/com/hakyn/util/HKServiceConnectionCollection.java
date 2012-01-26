@@ -16,7 +16,6 @@ import com.hakyn.srv.HKServiceConnection;
 public class HKServiceConnectionCollection {
 	// master list
 	private List<HKServiceConnection> conns;
-	
 	// indexes
 	private HashMap<Integer, List<Integer>> zoneIndex; // <zoneid, listindex>
 	private HashMap<String, Integer> characterIdIndex; // <characterid, listindex>

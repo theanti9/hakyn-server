@@ -60,13 +60,13 @@ public class UpdatePosition {
 		out[2] = 0x4b;
 		
 		// Non-header data length, 32 bytes in this case
-		ArrayUtil.ArrayIntoArray(out, Converter.intToByteArray(DATA_LENGTH), 3);
-		ArrayUtil.ArrayIntoArray(out, new byte[] { 0x00, COMMAND_BYTE }, 7);
+		out = ArrayUtil.ArrayIntoArray(out, Converter.intToByteArray(DATA_LENGTH), 3);
+		out = ArrayUtil.ArrayIntoArray(out, new byte[] { 0x00, COMMAND_BYTE }, 7);
 		
 		// Start body
-		ArrayUtil.ArrayIntoArray(out, characterId.getBytes(), 9);
-		ArrayUtil.ArrayIntoArray(out, Converter.intToByteArray(x), 33);
-		ArrayUtil.ArrayIntoArray(out, Converter.intToByteArray(y), 37);
+		out = ArrayUtil.ArrayIntoArray(out, characterId.getBytes(), 9);
+		out = ArrayUtil.ArrayIntoArray(out, Converter.intToByteArray(x), 33);
+		out = ArrayUtil.ArrayIntoArray(out, Converter.intToByteArray(y), 37);
 		return out;
 		
 	}
