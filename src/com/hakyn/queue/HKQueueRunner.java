@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import com.hakyn.srv.HKTCPService;
+import com.hakyn.srv.HKServiceListener;
 import com.hakyn.srv.protocol.HKMessage;
 import com.hakyn.srv.protocol.HKMessageHeader;
 import com.hakyn.util.ArrayUtil;
@@ -15,7 +15,7 @@ public class HKQueueRunner implements Runnable{
 
 	@Override
 	public void run() {
-		HKIDQueueBlock block = HKTCPService.dataQueue.dequeueChunk();
+		HKIDQueueBlock block = HKServiceListener.dataQueue.dequeueChunk();
 		byte[] cur = bufferMap.get(block.ID);
 		byte[] nw = new byte[cur.length+block.Length];
 		nw = ArrayUtil.ArrayIntoArray(nw, cur, 0);

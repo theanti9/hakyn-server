@@ -28,7 +28,7 @@ import com.hakyn.db.MySqlDbConnection;
 import com.hakyn.game.living.HKCharacter;
 import com.hakyn.game.living.HKMonster;
 import com.hakyn.srv.HKServiceConnection;
-import com.hakyn.srv.HKTCPService;
+import com.hakyn.srv.HKServiceListener;
 import com.hakyn.srv.protocol.HKMessageHeader;
 import com.hakyn.srv.protocol.HKMessage;
 import com.hakyn.util.ArrayUtil;
@@ -198,7 +198,7 @@ public class HKZone {
 	// Send out the new spawn info to people in the zone
 	private void sendSpawnUpdate(HashMap<ObjectId,DBObject> newSpawns) {
 		// Get a list of the service connections for the players in the zone
-		List<HKServiceConnection> svcCons = HKTCPService.svcCons.getConnectionsForZone(ZoneId);
+		List<HKServiceConnection> svcCons = HKServiceListener.svcCons.getConnectionsForZone(ZoneId);
 		
 		// Send all the spawn updates to each connection
 		for (HKServiceConnection con : svcCons) {
@@ -220,7 +220,7 @@ public class HKZone {
 	// Send the position update to everyone in the zone
 	private void sendPositionUpdate(DBObject ch) {
 		// Get a list of the service connections for the players in the zone
-		List<HKServiceConnection> svcCons = HKTCPService.svcCons.getConnectionsForZone(ZoneId);
+		List<HKServiceConnection> svcCons = HKServiceListener.svcCons.getConnectionsForZone(ZoneId);
 		
 		// Loop over the list
 		for (HKServiceConnection con : svcCons) {

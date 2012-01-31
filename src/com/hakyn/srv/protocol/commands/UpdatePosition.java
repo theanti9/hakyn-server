@@ -48,6 +48,7 @@ public class UpdatePosition {
 	public void run() throws IOException {
 		// Call the position update method in the positioning service
 		HKPositioningService.updateCharacterPosition(this.characterId, this.x, this.y);
+		System.out.println("Moving " + this.characterId + " to " + this.x + "," + this.y);
 	}
 	
 	// Get packet bytes for sending

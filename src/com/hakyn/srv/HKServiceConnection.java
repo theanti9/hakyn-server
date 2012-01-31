@@ -7,19 +7,17 @@
 
 package com.hakyn.srv;
 
-import Extasys.Network.TCP.Server.Listener.TCPClientConnection;
-import Extasys.Network.TCP.Server.Listener.Exceptions.ClientIsDisconnectedException;
-import Extasys.Network.TCP.Server.Listener.Exceptions.OutgoingPacketFailedException;
+import com.snow.IO.SnowTcpClient;
 
 public class HKServiceConnection {
 	
 	public String CharacterId;
 	public int ZoneId;
 	
-	private TCPClientConnection tcpClient;
+	private SnowTcpClient tcpClient;
 	
 	// Create the object with a given TCPClientConnection object
-	public HKServiceConnection(TCPClientConnection tcpClient) {
+	public HKServiceConnection(SnowTcpClient tcpClient) {
 		this.tcpClient = tcpClient;
 	}
 	
@@ -36,10 +34,8 @@ public class HKServiceConnection {
 	// Send bytes to the client
 	public void Send(byte[] bytes) {
 		try {
-			tcpClient.SendData(bytes, 0, bytes.length);
-		} catch (ClientIsDisconnectedException e) {
-			// TODO: do something
-		} catch (OutgoingPacketFailedException e) {
+			tcpClient.Write(bytes);
+		} catch (Exception e) {
 			// TODO: do something
 		}
 	}
