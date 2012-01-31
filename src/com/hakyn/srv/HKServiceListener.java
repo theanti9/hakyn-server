@@ -66,7 +66,7 @@ public class HKServiceListener implements Runnable {
 					}	
 				}
 			});
-			
+			server.Start();
 		} catch (Exception e) {
 			System.err.println("Service Exception" + e.getMessage());
 			System.exit(-1);
