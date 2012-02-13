@@ -1,19 +1,23 @@
 package com.hakyn.srv;
 
+import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import com.hakyn.config.HakynConfig;
 import com.hakyn.queue.HKBlockingIDQueue;
 import com.hakyn.queue.HKQueueRunner;
 import com.hakyn.util.HKServiceConnectionCollection;
-import com.snow.IO.*;
-import com.snow.IO.EventCallback.*;
+import com.snow.IO.SnowTcpClient;
+import com.snow.IO.SnowTcpServer;
+import com.snow.IO.EventCallback.IOConnectEventCallback;
+import com.snow.IO.EventCallback.IODisconnectEventCallback;
+import com.snow.IO.EventCallback.IOReadEventCallback;
 
 public class HKServiceListener implements Runnable {
 	
-	private static final int PORT = 9098;
 	private static final int CORE_POOL_SIZE = 30;
 	private static final int MAX_POOL_SIZE = 70;
 	private static final int THREAD_TIMEOUT = 30;
@@ -29,12 +33,19 @@ public class HKServiceListener implements Runnable {
 	public void run() {
 		try {
 			// instantiate server
-			SnowTcpServer server = new SnowTcpServer(PORT, CORE_POOL_SIZE, MAX_POOL_SIZE, THREAD_TIMEOUT, QUEUE_SIZE);
+			SnowTcpServer server = new SnowTcpServer(HakynConfig.getGameListenPort(), CORE_POOL_SIZE, MAX_POOL_SIZE, THREAD_TIMEOUT, QUEUE_SIZE);
 			
 			// Set up thread queue and pool
 			threadQueue = new ArrayBlockingQueue<Runnable>(QUEUE_SIZE);
 			threadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAX_POOL_SIZE, THREAD_TIMEOUT, TimeUnit.SECONDS, threadQueue);
 			
+			// init HKServiceConnectioCollection
+			svcCons = new HKServiceConnectionCollection();
+			
+			// instantiate data queue
+			Date d = new Date();
+			dataQueue = new HKBlockingIDQueue(d.toString().replace(" ", "").length());
+			d = null;
 			// Register connect callback
 			server.RegisterCallback(new IOConnectEventCallback() {
 				public void Invoke(SnowTcpClient client) {
@@ -42,7 +53,7 @@ public class HKServiceListener implements Runnable {
 					// and add it to the list
 					HKServiceConnection svcCon = new HKServiceConnection(client);
 					// Set the name to the date string with no spaces.
-					client.SetName(client.getConnectionTime().toString().replace(" ", ""));
+					client.SetName(client.GetConnectionTime().toString().replace(" ", ""));
 					svcCons.add(svcCon);
 					System.out.println("Service connection added from "+client);
 				}
@@ -62,16 +73,21 @@ public class HKServiceListener implements Runnable {
 						threadPool.execute(new Thread(new HKQueueRunner()));
 						
 					} catch (Exception e) {
-						System.err.println(e.getMessage());
+						e.printStackTrace();
 					}	
 				}
 			});
 			server.Start();
 		} catch (Exception e) {
-			System.err.println("Service Exception" + e.getMessage());
+			e.printStackTrace();
+			System.exit(-1);
+		} catch (Throwable t) {
+			t.printStackTrace();
 			System.exit(-1);
 		}
 		
 	}
-	
+	public void stop() {
+		threadPool.shutdownNow();
+	}
 }

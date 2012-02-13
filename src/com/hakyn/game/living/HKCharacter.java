@@ -11,11 +11,10 @@ import java.util.HashMap;
 
 import org.bson.types.ObjectId;
 
+import com.hakyn.db.MongoDbConnection;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-
-import com.hakyn.db.MongoDbConnection;
 
 public class HKCharacter {
 	

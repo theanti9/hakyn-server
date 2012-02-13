@@ -2,9 +2,9 @@ package com.hakyn.db;
 
 import java.net.UnknownHostException;
 
+import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.Mongo;
-import com.mongodb.DB;
 
 
 public class MongoDbConnection {
@@ -65,5 +65,9 @@ public class MongoDbConnection {
 	
 	public DBCollection getCollection(String collname) {
 		return this.db.getCollection(collname);
+	}
+	
+	public void close() {
+		mongo.close();
 	}
 }

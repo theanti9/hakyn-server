@@ -19,20 +19,19 @@ import java.util.Random;
 
 import org.bson.types.ObjectId;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-
 import com.hakyn.db.MongoDbConnection;
 import com.hakyn.db.MySqlDbConnection;
 import com.hakyn.game.living.HKCharacter;
 import com.hakyn.game.living.HKMonster;
 import com.hakyn.srv.HKServiceConnection;
 import com.hakyn.srv.HKServiceListener;
-import com.hakyn.srv.protocol.HKMessageHeader;
 import com.hakyn.srv.protocol.HKMessage;
+import com.hakyn.srv.protocol.HKMessageHeader;
 import com.hakyn.util.ArrayUtil;
 import com.hakyn.util.Converter;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 
 public class HKZone {
 	
@@ -149,6 +148,7 @@ public class HKZone {
 	
 	public void spawn() {
 		HashMap<ObjectId,DBObject> newSpawns = newSpawns();
+		System.out.println("Spawned " + newSpawns.size() + " monsters");
 		sendSpawnUpdate(newSpawns);
 		MonsterMap.putAll(newSpawns);
 	}
@@ -199,18 +199,19 @@ public class HKZone {
 	private void sendSpawnUpdate(HashMap<ObjectId,DBObject> newSpawns) {
 		// Get a list of the service connections for the players in the zone
 		List<HKServiceConnection> svcCons = HKServiceListener.svcCons.getConnectionsForZone(ZoneId);
-		
+		System.out.println("Found " + svcCons.size() + " connections in zone " + ZoneId);
 		// Send all the spawn updates to each connection
 		for (HKServiceConnection con : svcCons) {
 			for (DBObject dbobj : newSpawns.values()) {
 				// Create the fixed header
-				HKMessageHeader header = new HKMessageHeader((byte)0x02, 36);
+				HKMessageHeader header = new HKMessageHeader((byte)0x02, (byte)0x00, 36);
 				
 				byte[] body = new byte[36];
 				body = ArrayUtil.ArrayIntoArray(body, dbobj.get("_id").toString().getBytes(), 0);
 				body = ArrayUtil.ArrayIntoArray(body, dbobj.get("MonsterID").toString().getBytes(), 24);
 				body = ArrayUtil.ArrayIntoArray(body, Converter.intToByteArray((Integer)dbobj.get("x_coord")), 28);
 				body = ArrayUtil.ArrayIntoArray(body, Converter.intToByteArray((Integer)dbobj.get("y_coord")), 32);
+				System.out.println("Sending monster spawn command");
 				con.Send(new HKMessage(header, body, (byte)0x02).getBytes());
 			}
 		}
@@ -225,7 +226,7 @@ public class HKZone {
 		// Loop over the list
 		for (HKServiceConnection con : svcCons) {
 			// Create the position update header
-			HKMessageHeader header = new HKMessageHeader((byte)0x01, 32);
+			HKMessageHeader header = new HKMessageHeader((byte)0x01, (byte)0x00, 32);
 			
 			// Create body and copy data to it
 			byte[] body = new byte[32];

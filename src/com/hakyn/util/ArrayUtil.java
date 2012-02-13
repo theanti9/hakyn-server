@@ -1,5 +1,7 @@
 package com.hakyn.util;
 
+import java.util.Arrays;
+
 public class ArrayUtil {
 	public static final byte[] ArrayIntoArray(byte[] into, byte[] from, int start) {
 		int stop = from.length;
@@ -48,4 +50,14 @@ public class ArrayUtil {
 		}
 		return into;
 	}
+	
+	public static final byte[] GetToFirstNull(byte[] from) {
+		int i = 0;
+		int count = 0;
+		while (from[i] != 0x00) {
+			count++;
+		}
+		return Arrays.copyOfRange(from, 0, count);
+	}
+	
 }

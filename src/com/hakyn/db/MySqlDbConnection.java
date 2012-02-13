@@ -39,4 +39,8 @@ public class MySqlDbConnection {
 		return con.createStatement();
 	}
 	
+	public void close() throws SQLException {
+		con.close();
+	}
+	
 }

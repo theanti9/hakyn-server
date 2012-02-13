@@ -2,7 +2,7 @@ package com.hakyn.srv.protocol;
 
 import java.io.IOException;
 
-import com.hakyn.srv.protocol.commands.UpdatePosition;
+import com.hakyn.srv.protocol.commands.HKUpdatePositionCommand;
 import com.hakyn.util.ArrayUtil;
 
 public class HKMessage {
@@ -34,7 +34,7 @@ public class HKMessage {
 		switch(command) {
 		case 0x01:
 			try {
-				UpdatePosition up = new UpdatePosition(body);
+				HKUpdatePositionCommand up = new HKUpdatePositionCommand(body);
 				up.run();
 			} catch (IOException e) {
 				// Probably a bad packet. Ignore

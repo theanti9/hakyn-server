@@ -1,10 +1,10 @@
 package com.hakyn.srv.service;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-
+import com.hakyn.config.HakynConfig;
 import com.hakyn.db.MongoDbConnection;
 import com.hakyn.game.HKZone;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 
 
 public class HKMonsterSpawn implements Runnable {
@@ -18,7 +18,7 @@ public class HKMonsterSpawn implements Runnable {
 		MongoDbConnection.getInstance().getCollection("spawned_monsters").remove(dbobj);
 		while (true) {
 			try {
-				Thread.sleep(60000);
+				Thread.sleep(HakynConfig.getSpawnInterval());
 				System.out.println("Starting spawn...");
 				for (HKZone z : HKPositioningService.ZoneMap.values()) {
 					System.out.println("Spawning in zone "+z.ZoneId);
@@ -26,7 +26,8 @@ public class HKMonsterSpawn implements Runnable {
 				}
 				System.out.println("Finished spawn");
 			} catch (InterruptedException e) {
-				// Do nothing
+				// print stack trace
+				e.printStackTrace();
 			}
 			
 		}

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import com.hakyn.config.HakynConfig;
 import com.hakyn.game.HKZone;
 
 public class HKPositioningService implements Runnable {
@@ -33,7 +34,7 @@ public class HKPositioningService implements Runnable {
 		while (true) {
 			try {
 				// Save the character positions ever 60 seconds
-				Thread.sleep(60000);
+				Thread.sleep(HakynConfig.getMapSaveInterval());
 				save();
 			} catch (InterruptedException e) {
 				// Don't do anything

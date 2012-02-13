@@ -11,10 +11,10 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.hakyn.srv.service.HKPositioningService;
-import com.hakyn.util.Converter;
 import com.hakyn.util.ArrayUtil;
+import com.hakyn.util.Converter;
 
-public class UpdatePosition {
+public class HKUpdatePositionCommand {
 	
 	private static final int DATA_LENGTH = 32;
 	private static final byte COMMAND_BYTE = 0x01;
@@ -23,14 +23,14 @@ public class UpdatePosition {
 	private int y;
 	
 	// Construct object given a byte array (used when reading data in from the network)
-	public UpdatePosition(byte[] bytes) throws IOException {
+	public HKUpdatePositionCommand(byte[] bytes) throws IOException {
 		// If the packet isn't the right length, throw an exception
 		if (bytes.length != DATA_LENGTH) {
 			throw new IOException("Invalid command length");
 		}
 		
 		// Get the character ID. Should be a 24 character string - byte 0-23 in the array
-		this.characterId = new String(Arrays.copyOfRange(bytes, 0, 23));
+		this.characterId = new String(Arrays.copyOfRange(bytes, 0, 24));
 		
 		// x and y coordinate are the remaining 8 bytes, each 32bit integers 
 		this.x = Converter.networkToInt(bytes, 24);
@@ -38,7 +38,7 @@ public class UpdatePosition {
 	}
 	
 	// Construct object given parameters (used when sending data out of the network)
-	public UpdatePosition(String characterId, int x, int y) {
+	public HKUpdatePositionCommand(String characterId, int x, int y) {
 		// Set object attributes appropriately
 		this.characterId = characterId;
 		this.x = x;
@@ -52,7 +52,7 @@ public class UpdatePosition {
 	}
 	
 	// Get packet bytes for sending
-	public byte[] GetMessage() {
+	public byte[] getMessage() {
 		// packet should be 41 bytes - 9 for fixed header and 32 for data
 		byte[] out = new byte[41];
 		// HAK header

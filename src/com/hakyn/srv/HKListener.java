@@ -7,13 +7,17 @@
  */
 
 package com.hakyn.srv;
-import com.hakyn.db.*;
-import com.hakyn.srv.service.*;
+import com.hakyn.config.HakynConfig;
+import com.hakyn.config.HakynConfigLoader;
+import com.hakyn.db.MongoDbConnection;
+import com.hakyn.db.MySqlDbConnection;
+import com.hakyn.srv.service.HKMonsterSpawn;
+import com.hakyn.srv.service.HKPositioningService;
 
 public class HKListener {
 	
 	public static final String HOST = "localhost";
-	public static final int PORT = 9098;
+	//public static final int PORT = 9098;
 	
 	public static HKPositioningService posService = new HKPositioningService();
 	public static HKServiceListener svcListener = new HKServiceListener();
@@ -23,10 +27,18 @@ public class HKListener {
 		System.out.println("Starting...");
 		
 		try {
+			
+			// initialize config
+			HakynConfigLoader.LoadConfig();
+			
 			// Initialize databases
-			new MongoDbConnection();
-			MongoDbConnection.getInstance().selectDb("hakyn");
-			new MySqlDbConnection("localhost", 3306, "root", "", "hakyn");
+			new MongoDbConnection(HakynConfig.getActiveGameDBHost(), HakynConfig.getActiveGameDBPort());
+			if (HakynConfig.getActiveGameDBUser() != null) {
+				MongoDbConnection.getInstance().auth(HakynConfig.getActiveGameDBUser(), HakynConfig.getActiveDBPass());
+			}
+			
+			MongoDbConnection.getInstance().selectDb(HakynConfig.getActiveDBName());
+			new MySqlDbConnection(HakynConfig.getStaticDBHost(), HakynConfig.getStaticDBPort(), HakynConfig.getStaticDBUser(), HakynConfig.getStaticDBPass(), HakynConfig.getStaticDBName());
 			
 			
 			// Start the Position Service in a new thread
@@ -48,9 +60,13 @@ public class HKListener {
 			System.out.println("Press <enter> to exit...");
 			System.in.read();
 		} finally {
+			svcListener.stop();
 			posService = null;
 			svcListener = null;
 			spwnService = null;
+			MongoDbConnection.getInstance().close();
+			MySqlDbConnection.getInstance().close();
+			
 		}
 		
 	}
