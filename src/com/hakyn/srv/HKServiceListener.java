@@ -18,8 +18,8 @@ import com.snow.IO.EventCallback.IOReadEventCallback;
 
 public class HKServiceListener implements Runnable {
 	
-	private static final int CORE_POOL_SIZE = 30;
-	private static final int MAX_POOL_SIZE = 70;
+	private static final int CORE_POOL_SIZE = Runtime.getRuntime().availableProcessors()*10;
+	private static final int MAX_POOL_SIZE = Runtime.getRuntime().availableProcessors()*25;
 	private static final int THREAD_TIMEOUT = 30;
 	private static final int QUEUE_SIZE = 100;
 	
