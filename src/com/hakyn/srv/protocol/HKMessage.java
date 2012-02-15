@@ -1,7 +1,9 @@
 package com.hakyn.srv.protocol;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
+import com.hakyn.srv.protocol.commands.HKAuthCommand;
 import com.hakyn.srv.protocol.commands.HKUpdatePositionCommand;
 import com.hakyn.util.ArrayUtil;
 
@@ -38,12 +40,23 @@ public class HKMessage {
 				up.run();
 			} catch (IOException e) {
 				// Probably a bad packet. Ignore
+				e.printStackTrace();
 			}
 			out = new byte[0];
 			break;
 		case 0x02:
 			// Shouldn't ever receive this packet.
 			out = new byte[0];
+			break;
+		case 0x03:
+			HKAuthCommand cmd = new HKAuthCommand(body);
+			try {
+				cmd.run();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			out = cmd.getReturnBytes();
 			break;
 		default:
 			out = new byte[0];

@@ -1,8 +1,8 @@
 package com.hakyn.srv;
 
 import java.util.Date;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +36,7 @@ public class HKServiceListener implements Runnable {
 			SnowTcpServer server = new SnowTcpServer(HakynConfig.getGameListenPort(), CORE_POOL_SIZE, MAX_POOL_SIZE, THREAD_TIMEOUT, QUEUE_SIZE);
 			
 			// Set up thread queue and pool
-			threadQueue = new ArrayBlockingQueue<Runnable>(QUEUE_SIZE);
+			threadQueue = new LinkedBlockingQueue<Runnable>(QUEUE_SIZE);
 			threadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAX_POOL_SIZE, THREAD_TIMEOUT, TimeUnit.SECONDS, threadQueue);
 			
 			// init HKServiceConnectioCollection

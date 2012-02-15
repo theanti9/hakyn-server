@@ -60,4 +60,19 @@ public class ArrayUtil {
 		return Arrays.copyOfRange(from, 0, count);
 	}
 	
+	public static final byte[] FillExtraWithNull(byte[] into, byte[] from, int width, int offset) throws IndexOutOfBoundsException {
+		if (offset+width > into.length) {
+			throw new IndexOutOfBoundsException();
+		}
+		
+		int i;
+		for (i = 0; i < from.length; i++) {
+			into[i+offset] = from[i];
+		}
+		for (/* use current i */;i<width; i++) {
+			into[i+offset] = 0x00;
+		}
+		return into;
+	}
+	
 }

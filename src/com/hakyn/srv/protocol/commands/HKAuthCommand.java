@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 import com.hakyn.auth.HKAuthToken;
 import com.hakyn.db.MongoDbConnection;
 import com.hakyn.db.MySqlDbConnection;
+import com.hakyn.srv.protocol.HKMessageHeader;
 import com.hakyn.util.ArrayUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -37,7 +38,7 @@ public class HKAuthCommand {
 	private String password;
 	
 	// This should be generated
-	private String token;
+	private String token = "";
 	private boolean hasError = false;
 	private int error;
 	
@@ -58,6 +59,11 @@ public class HKAuthCommand {
 	}
 	
 	public void run() throws SQLException {
+		// If we got an error in the constructor, just return
+		if (hasError) {
+			return;
+		}
+		
 		// look up info
 		Statement stmt = MySqlDbConnection.getInstance().getNewStatement();
 		
@@ -116,6 +122,14 @@ public class HKAuthCommand {
 			ret = this.error;
 		}
 		return ret;
+	}
+	
+	public byte[] getReturnBytes() {
+		HKMessageHeader header = new HKMessageHeader((byte)0x03, (byte)this.error, 32);
+		byte[] out = new byte[41];
+		out = ArrayUtil.ArrayIntoArray(out, header.getBytes(), 0);
+		out = ArrayUtil.FillExtraWithNull(out, this.token.getBytes(), 32, 9);
+		return out;
 	}
 	
 }
